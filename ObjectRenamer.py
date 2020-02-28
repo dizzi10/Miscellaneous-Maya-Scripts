@@ -54,8 +54,9 @@ def FindMatchingObjs(objectList):
 
 
 def UI():
-    windowID = 'myWindowID'
     global windowID
+    windowID = 'myWindowID'
+    
     if cmds.window( windowID, exists=True ):
         cmds.deleteUI( windowID )
     cmds.window( windowID, title = "ObjectRenamer", sizeable=False, resizeToFitChildren=True )
