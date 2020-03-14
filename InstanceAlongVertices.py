@@ -6,25 +6,25 @@ random.seed(1234)
     
 
 #main function that perfoms the actual processes
-def instanceIteration(RotationRangeField, ScaleRangeEndField, ScaleRangeStartField, PlacementAmountField):
+def instanceIteration(RotationRangeField, ScaleRangeEndField, ScaleRangeStartField, PlacementAmountField, *pArgs):
     
     #Takes user input from the gui and stores them into variables
-    XRotationRange = cmds.floatFieldGrp(RotationRangeField, query = True, value1 - True)
-    YRotationRange = cmds.floatFieldGrp(RotationRangeField, query = True, value2 - True)
-    ZRotationRange = cmds.floatFieldGrp(RotationRangeField, query = True, value3 - True)
+    XRotationRange = cmds.floatFieldGrp(RotationRangeField, query = True, value1 = True)
+    YRotationRange = cmds.floatFieldGrp(RotationRangeField, query = True, value2 = True)
+    ZRotationRange = cmds.floatFieldGrp(RotationRangeField, query = True, value3 = True)
     RotationRange = [XRotationRange, YRotationRange, ZRotationRange]
     
-    XScaleRangeEnd = cmds.floatFieldGrp(ScaleRangeEndField, query = True, value1 - True)
-    YScaleRangeEnd = cmds.floatFieldGrp(ScaleRangeEndField, query = True, value2 - True)
-    ZScaleRangeEnd = cmds.floatFieldGrp(ScaleRangeEndField, query = True, value3 - True)
+    XScaleRangeEnd = cmds.floatFieldGrp(ScaleRangeEndField, query = True, value1 = True)
+    YScaleRangeEnd = cmds.floatFieldGrp(ScaleRangeEndField, query = True, value2 = True)
+    ZScaleRangeEnd = cmds.floatFieldGrp(ScaleRangeEndField, query = True, value3 = True)
     ScaleRangeEnd = [XScaleRangeEnd, YScaleRangeEnd, ZScaleRangeEnd]
     
-    XScaleRangeStart = cmds.floatFieldGrp(ScaleRangeStartField, query = True, value1 - True)
-    YScaleRangeStart  = cmds.floatFieldGrp(ScaleRangeStartField, query = True, value2 - True)
-    ZScaleRangeStart  = cmds.floatFieldGrp(ScaleRangeStartField, query = True, value3 - True)
+    XScaleRangeStart = cmds.floatFieldGrp(ScaleRangeStartField, query = True, value1 = True)
+    YScaleRangeStart  = cmds.floatFieldGrp(ScaleRangeStartField, query = True, value2 = True)
+    ZScaleRangeStart  = cmds.floatFieldGrp(ScaleRangeStartField, query = True, value3 = True)
     ScaleRangeStart  = [XScaleRangeStart , YScaleRangeStart , ZScaleRangeStart]
     
-    PlacementAmountFactor = cmds.floatField(PlacementAmountField, query = True, value - True)
+    PlacementAmountFactor = cmds.floatField(PlacementAmountField, query = True, value = True)
     
     #get all the components to instance over
     #gets faces, edges and vertices
@@ -35,9 +35,9 @@ def instanceIteration(RotationRangeField, ScaleRangeEndField, ScaleRangeStartFie
     object = objectlist[0]
     
     #Optional parameter that randomizes component placement
-    if PlacementAmount != 1:
-        PlacementAmount = (len(compenents)) * (PlacementAmountFactor) 
-        components = random.choices(components, k = PlacementAmount)
+    if PlacementAmountFactor != 1:
+        PlacementAmount = int((len(components)) * (PlacementAmountFactor)) 
+        components = random.sample(components, k = PlacementAmount)
     
         
  
@@ -54,7 +54,7 @@ def instanceIteration(RotationRangeField, ScaleRangeEndField, ScaleRangeStartFie
         # calls function to randoimize instance if requested
         instanceRandomizer(currentInstance, RotationRange, ScaleRangeEnd, ScaleRangeStart, PlacementAmountFactor)
 # Optional settings to randomize instances
-def instanceRandomizer(currentInstance, RotationRange, ScaleRangeEnd, ScaleRangeStart, PlacementAmountFactor):
+def instanceRandomizer(currentInstance, RotationRange, ScaleRangeEnd, ScaleRangeStart, PlacementAmountFactor, *pArgs):
     
     xRot=random.uniform(0, RotationRange[0]) # this will be added to UI parameters
     yRot=random.uniform(0, RotationRange[1]) # this will be added to UI parameters
@@ -68,7 +68,7 @@ def instanceRandomizer(currentInstance, RotationRange, ScaleRangeEnd, ScaleRange
     return currentInstance
 
 #Create UI for script
-def UI():
+def UI(instanceIteration):
     global windowID
     windowID = 'myWindowID'
     
@@ -83,9 +83,14 @@ def UI():
     RotationRangeField = cmds.floatFieldGrp( numberOfFields=3, value1 = 0, value2 = 0, value3 = 0 )
    
     cmds.separator( w=1, style='none' )
-    cmds.text(label = "Random Scale Range:", align = "right")
+    cmds.text(label = "Random Scale Range Start Values:", align = "right")
     cmds.separator( width=1, style='none' )
-    ScaleRangeField = cmds.floatFieldGrp( numberOfFields=3, value1 = 0, value2 = 0, value3 = 0 )
+    ScaleRangeStartField = cmds.floatFieldGrp( numberOfFields=3, value1 = 1, value2 = 1, value3 = 1 )
+    
+    cmds.separator( w=1, style='none' )
+    cmds.text(label = "Random Scale Range End Values:", align = "right")
+    cmds.separator( width=1, style='none' )
+    ScaleRangeEndField = cmds.floatFieldGrp( numberOfFields=3, value1 = 1, value2 = 1, value3 = 1 )
     
     cmds.separator( w=1, style='none' )
     cmds.text(label = "Random Component Placement Value:", align = "right")
@@ -94,7 +99,8 @@ def UI():
 
     cmds.separator( w=1, style='none' )
     cmds.button(label="Apply", command=functools.partial(instanceIteration, RotationRangeField, 
-                                                         ScaleRangeField, PlacementAmountField )) 
+                                                         ScaleRangeEndField, ScaleRangeStartField,
+                                                         PlacementAmountField )) 
     cmds.button(label="Cancel")
     cmds.showWindow()
 
