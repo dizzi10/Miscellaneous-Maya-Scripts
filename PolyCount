@@ -1,17 +1,44 @@
-def PolyCount(objectlist):
-    for object in objectlist:
-        triangle = cmds.polyEvaluate(object, t=True)
-        triangleuser = cmds.polyEvaluate(object, t=True, fmt=True)
-        return triangle and triangleuser
-# This next bit is simply adding to the already existing changeNames function
+def PolyCount(matchedObjsfinal):
+    highlist = []
+    lowlist = []
+    for object in matchedObjsfinal:
+        if cmds.polyEvaluate(object[0], t=True) > cmds.polyEvaluate(object[1], t=True):
+            highlist.append(object[0])
+            lowlist.append(object[1])
+        else:
+            highlist.append(object[1])
+            lowlist.append(object[0])
+    print(highlist)
+    print(lowlist)
+    return highlist and lowlist
 
-def changeNames(objectList, triangle):
-    prefix=cmds.textField("prefixFieldInput",query=True,text=True)
-    suffix=cmds.textField("suffixFieldInput",query=True,text=True)
-    for object in objectList:
-        newName = prefix + object + suffix + str(triangle)
-        """ adding the calculated number of triangles (being used as a representative of polygon density) and adding it
-        to the end of the name of the object"""
+
+def UI2():
+    global windowID
+    windowID = 'myWindowID'
+
+    if cmds.window(windowID, exists=True):
+        cmds.deleteUI(windowID)
+    cmds.window(windowID, title="PolyCountRenamer", sizeable=False, resizeToFitChildren=True)
+    cmds.rowColumnLayout(numberOfColumns=2)
+
+    cmds.text("High Poly Suffix: ")
+    cmds.textField("highpolyFieldInput")
+    cmds.text("Low Poly Suffix: ")
+    cmds.textField("lowpolyFieldInput")
+
+    cmds.button(label="Apply", command="changeNames2(highlist, lowlist)")
+
+    cmds.showWindow()
+
+def changeNames2(highlist, lowlist):
+    highpolysuffix=cmds.textField("highpolyFieldInput",query=True,text=True)
+    lowpolysuffix=cmds.textField("lowpolyFieldInput",query=True,text=True)
+    for object in highlist:
+        newName = object + highpolysuffix
+        cmds.rename(object, newName)
+    for object in lowlist:
+        newName = object + lowpolysuffix
         cmds.rename(object, newName)
     cmds.deleteUI( windowID )
     cmds.select(deselect = True)
