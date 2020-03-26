@@ -5,7 +5,9 @@ from functools import partial
 from itertools import combinations
 
 #Find Distance between two objects
-def FindMatchingObjs(objectList):
+highlist = []
+lowlist = []
+def FindMatchingObjs(objectList, highlist, lowlist):
     #This function taken from: http://www.timcallaway.com/?p=26
     def GetDistance(objA, objB):
     	gObjA = cmds.xform(objA, q=True, t=True, ws=True)
@@ -49,9 +51,7 @@ def FindMatchingObjs(objectList):
         matchedObjs.append(min(distancedict, key=distancedict.get))
         distancedict.clear()
     matchedObjsfinal = list(dict.fromkeys(matchedObjs)) #removes duplicates in list, because dicitonaries cannot have duplicate keys
-    def PolyCount(matchedObjsfinal):
-        highlist = []
-        lowlist = []
+    def PolyCount(matchedObjsfinal, highlist, lowlist):
         for object in matchedObjsfinal:
             if cmds.polyEvaluate(object[0], t=True) > cmds.polyEvaluate(object[1], t=True):
                 highlist.append(object[0])
@@ -59,8 +59,9 @@ def FindMatchingObjs(objectList):
             else:
                 highlist.append(object[1])
                 lowlist.append(object[0])
+        return highlist and lowlist
 
-    PolyCount(matchedObjsfinal)
+    PolyCount(matchedObjsfinal, highlist, lowlist)
     return(matchedObjsfinal)    
 
 
@@ -68,63 +69,45 @@ def FindMatchingObjs(objectList):
 def UI():
     global windowID
     windowID = 'myWindowID'
-    
-    if cmds.window( windowID, exists=True ):
-        cmds.deleteUI( windowID )
-    cmds.window( windowID, title = "ObjectRenamer", sizeable=False, resizeToFitChildren=True )
-    cmds.rowColumnLayout(numberOfColumns = 2)
-    
+
+    if cmds.window(windowID, exists=True):
+        cmds.deleteUI(windowID)
+    cmds.window(windowID, title="ObjectRenamer", sizeable=False, resizeToFitChildren=True)
+    cmds.rowColumnLayout(numberOfColumns=4)
+
     cmds.text("Prefix:")
     cmds.textField("prefixFieldInput")
     cmds.text("Suffix:")
     cmds.textField("suffixFieldInput")
-    
-    cmds.button(label="Apply",command = "changeNames(objectList)")
-    
-    cmds.showWindow()
-
-def changeNames(objectList):
-    prefix=cmds.textField("prefixFieldInput",query=True,text=True)
-    suffix=cmds.textField("suffixFieldInput",query=True,text=True)
-    for object in objectList:
-        newName = prefix + object + suffix
-        cmds.rename(object, newName)
-    cmds.deleteUI( windowID )
-    cmds.select(deselect = True)
-    
-def UI2():
-    global windowID
-    windowID = 'myWindowID'
-
-    if cmds.window(windowID, exists=True):
-        cmds.deleteUI(windowID)
-    cmds.window(windowID, title="PolyCountRenamer", sizeable=False, resizeToFitChildren=True)
-    cmds.rowColumnLayout(numberOfColumns=2)
-
     cmds.text("High Poly Suffix: ")
     cmds.textField("highpolyFieldInput")
     cmds.text("Low Poly Suffix: ")
     cmds.textField("lowpolyFieldInput")
 
-    cmds.button(label="Apply", command="changeNames2(highlist, lowlist)")
+    cmds.button(label="Apply", command="changeNames(objectList, highlist, lowlist)")
 
     cmds.showWindow()
 
-def changeNames2(highlist, lowlist):
+
+def changeNames(objectList, highlist, lowlist):
+    prefix = cmds.textField("prefixFieldInput", query=True, text=True)
+    suffix = cmds.textField("suffixFieldInput", query=True, text=True)
     highpolysuffix=cmds.textField("highpolyFieldInput",query=True,text=True)
     lowpolysuffix=cmds.textField("lowpolyFieldInput",query=True,text=True)
+    for object in objectList:
+        newName = prefix + object + suffix
+        cmds.rename(object, newName)
     for object in highlist:
         newName = object + highpolysuffix
         cmds.rename(object, newName)
     for object in lowlist:
         newName = object + lowpolysuffix
         cmds.rename(object, newName)
-    cmds.deleteUI( windowID )
-    cmds.select(deselect = True)
+    cmds.deleteUI(windowID)
+    cmds.select(deselect=True)
     
 objectList = cmds.ls(selection = True) 
 
-MatchingsObjs =  FindMatchingObjs(objectList)
+MatchingsObjs =  FindMatchingObjs(objectList, highlist, lowlist)
 print(MatchingsObjs)      
 UI()
-UI2()
