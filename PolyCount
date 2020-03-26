@@ -1,0 +1,17 @@
+def PolyCount(objectlist):
+    for object in objectlist:
+        triangle = cmds.polyEvaluate(object, t=True)
+        triangleuser = cmds.polyEvaluate(object, t=True, fmt=True)
+        return triangle and triangleuser
+# This next bit is simply adding to the already existing changeNames function
+
+def changeNames(objectList, triangle):
+    prefix=cmds.textField("prefixFieldInput",query=True,text=True)
+    suffix=cmds.textField("suffixFieldInput",query=True,text=True)
+    for object in objectList:
+        newName = prefix + object + suffix + str(triangle)
+        """ adding the calculated number of triangles (being used as a representative of polygon density) and adding it
+        to the end of the name of the object"""
+        cmds.rename(object, newName)
+    cmds.deleteUI( windowID )
+    cmds.select(deselect = True)
