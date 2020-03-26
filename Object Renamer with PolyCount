@@ -95,13 +95,10 @@ def changeNames(objectList, highlist, lowlist):
     highpolysuffix=cmds.textField("highpolyFieldInput",query=True,text=True)
     lowpolysuffix=cmds.textField("lowpolyFieldInput",query=True,text=True)
     for object in objectList:
-        newName = prefix + object + suffix
-        cmds.rename(object, newName)
-    for object in highlist:
-        newName = object + highpolysuffix
-        cmds.rename(object, newName)
-    for object in lowlist:
-        newName = object + lowpolysuffix
+        if object in highlist:
+            newName = prefix + object + suffix + highpolysuffix
+        if object in lowlist:
+            newName = prefix + object + suffix + lowpolysuffix
         cmds.rename(object, newName)
     cmds.deleteUI(windowID)
     cmds.select(deselect=True)
