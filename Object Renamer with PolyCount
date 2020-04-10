@@ -6,6 +6,8 @@ from itertools import combinations
 #Creating two separate lists that will contain the high poly count objects and the low poly count objects of each pair
 highlist = []
 lowlist = []
+cmds.group(em= True, name='highpoly')
+cmds.group(em= True, name='lowpoly')
 
 # Find Distance between two objects
 def FindMatchingObjs(objectList, highlist, lowlist):
@@ -52,8 +54,7 @@ def FindMatchingObjs(objectList, highlist, lowlist):
 
         matchedObjs.append(min(distancedict, key=distancedict.get))
         distancedict.clear()
-    matchedObjsfinal = list(
-        dict.fromkeys(matchedObjs))  # removes duplicates in list, because dicitonaries cannot have duplicate keys
+    matchedObjsfinal = list(dict.fromkeys(matchedObjs))  # removes duplicates in list, because dicitonaries cannot have duplicate keys
 
     def PolyCount(matchedObjsfinal, highlist, lowlist): #Separates the pairs into high poly and low poly
         for object in matchedObjsfinal:
@@ -64,7 +65,6 @@ def FindMatchingObjs(objectList, highlist, lowlist):
                 highlist.append(object[1])
                 lowlist.append(object[0])
         return highlist and lowlist
-
     PolyCount(matchedObjsfinal, highlist, lowlist) #Calls upon the PolyCount function to form the separated lists
     return (matchedObjsfinal)
 
@@ -75,19 +75,38 @@ def UI():
 
     if cmds.window(windowID, exists=True):
         cmds.deleteUI(windowID)
-    cmds.window(windowID, title="ObjectRenamer", sizeable=False, resizeToFitChildren=True)
+    cmds.window(windowID, title="ObjectRenamer", sizeable=False)
     cmds.rowColumnLayout(numberOfColumns=4)
 
-    cmds.text("Prefix:")
+    cmds.text("Distance Pairs:")
+    cmds.separator(style='none')
+    cmds.text("Polygon Count Pairs:")
+    cmds.separator(style='none')
+    cmds.separator(style='none')
+    cmds.text("Enter Here")
+    cmds.separator(style='none')
+    cmds.text("Enter Here")
+    cmds.text("Prefix:", align='right')
     cmds.textField("prefixFieldInput")
-    cmds.text("Suffix:")
-    cmds.textField("suffixFieldInput")
-    cmds.text("High Poly Suffix: ")
+    cmds.text("High Poly Suffix:", align='right')
     cmds.textField("highpolyFieldInput")
-    cmds.text("Low Poly Suffix: ")
+    cmds.text("Suffix:", align='right')
+    cmds.textField("suffixFieldInput")
+    cmds.text("Low Poly Suffix:", align='right')
     cmds.textField("lowpolyFieldInput")
 
+    cmds.separator(h=20, style='none')
+    cmds.separator(h=20, style='none')
+    cmds.separator(h=20, style='none')
+    cmds.separator(h=20, style='none')
+
+    cmds.separator(style='none')
+    cmds.separator(style='none')
     cmds.button(label="Apply", command="changeNames(objectList, highlist, lowlist)")
+    def deleteWindow(*pArgs):
+        if cmds.window(windowID, exists=True):
+            cmds.deleteUI(windowID)
+    cmds.button(label="Cancel", command=deleteWindow)
 
     cmds.showWindow()
 
