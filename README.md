@@ -1,11 +1,15 @@
 # Miscellaneous-Maya-Scripts
 
-#Object Renamer renames objects according to a set convention based on their distance to each other, this is useful in creating matching low and high poly assets for game art production.
+# Object Renamer - renames objects according to a set convention based on their distance to each other, this is useful in creating matching low and high poly assets for game art production.
 
   Explanation: 
     The script scans the user's selected objects. It will match pairs of objects that are closest together. Then rename them accordingly.  Additionally it will identify which object has more polygons and associate it with other objects in the other pairs that are higher in polygons. So now we have pairs of objects that are overlapping and two sets of objects based on polys. Objects in the same pair have the same base name, however objects in the high poly set have _high as suffix and objects in low poly have _low.  
     
     The point of this script is to help rename objects for texture baking. http://wiki.polycount.com/wiki/Texture_Baking
+    
+# Point on Poly Constraint Instancer - uses instancing objects on components such as faces or vertices, includes different settings such as randomness and placement amount. Useful for placing objects such as chain links for chainmail on plane with evenly spaced vertices. 
+
+# Duplicate Along Curve with Mash V2 - uses the motion graphics tool within maya called MASH to simplify and easily place objects on a curve, in the demo file it can be used to duplicate the tire pattern in a circle to model a tire. The objects will be duplicated to fit the curve if the curve is changed.
 
 To demo the scripts you need to install the software
 Download any version of maya, You can get a free license by applying as a student.
