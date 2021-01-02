@@ -11,7 +11,7 @@ To demo the scripts you need to install the software
 Download any version of maya, You can get a free license by applying as a student.
 Link: https://www.autodesk.com/education/free-software/maya
 
-Once downloaded, use maya to open the finaliteration.0001.ma file included in this folder.
+Once downloaded, use maya to open the demo.ma file.
 
 Go to the bottom of the maya ui and open the script editor, it should be a small icon in the botom right corner 
 
